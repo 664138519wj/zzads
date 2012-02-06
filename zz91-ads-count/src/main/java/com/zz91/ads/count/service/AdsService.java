@@ -40,7 +40,7 @@ public class AdsService {
 	public static String CACHE_VERSION="1";
 	public static boolean DEBUG=false;
 	public static final String VERSION="ad";
-	public static final int CACHE_EXPIRE=43200;
+	public static final int CACHE_EXPIRE=600;
 	
 	private static AdsService _instance = null;
 
@@ -116,7 +116,9 @@ public class AdsService {
 		sb.append("|");
 		for(Integer k:exact.keySet()){
 			if(StringUtils.isNotEmpty(exact.get(k))){
-				sb.append(k).append(":").append(exact.get(k)).append("|");
+				// TODO 关键字替换
+				
+				sb.append(k).append(":").append(saveEncode(exact.get(k))).append("|");
 			}
 		}
 		
@@ -489,5 +491,17 @@ public class AdsService {
 //		MemcachedUtils.getInstance().getClient().set(getKey(pid, parameterMap), CACHE_EXPIRE, adCache);
 		
 		return adCache;
+	}
+	
+	private String saveEncode(String keywords){
+		if(StringUtils.isEmpty(keywords)){
+			return "";
+		}
+		keywords=keywords.replaceAll("astoxg", "/");
+		keywords=keywords.replaceAll("asto5c", "\\\\");
+		keywords=keywords.replaceAll("astohg", "-");
+		keywords=keywords.replaceAll("astokhl", "(");
+		keywords=keywords.replaceAll("astokhr", ")");
+		return keywords;
 	}
 }
