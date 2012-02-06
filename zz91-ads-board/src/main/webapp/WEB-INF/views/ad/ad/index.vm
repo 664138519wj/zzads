@@ -1,0 +1,25 @@
+<script type="text/javascript" src="#springUrl('/app/ad/ad.js')" ></script>
+<script type="text/javascript">
+var AD = new function() {
+	this.STEP_ONE_WIN="STEP_ONE_WIN";
+	this.STEP_TWO_WIN="STEP_TWO_WIN";
+}
+
+Ext.onReady(function() {
+
+/*
+	var grid = new com.zz91.ads.board.ad.ad.Grid({
+		layout:"fit",
+		region:"center"
+	});
+	
+	var viewport = new Ext.Viewport({
+		layout:"border",
+		items:[grid]
+	});
+*/
+
+	com.zz91.ads.board.ad.ad.AdEditWin();
+	
+});
+</script>
