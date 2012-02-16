@@ -22,6 +22,7 @@ import com.zz91.ads.board.domain.ad.Ad;
 import com.zz91.ads.board.dto.ExtResult;
 import com.zz91.ads.board.dto.Pager;
 import com.zz91.ads.board.dto.ad.AdDto;
+import com.zz91.ads.board.dto.ad.AdSearchDto;
 import com.zz91.ads.board.service.ad.AdService;
 import com.zz91.ads.board.utils.AdConst;
 import com.zz91.util.datetime.DateUtil;
@@ -54,7 +55,7 @@ public class DesignController extends BaseController{
 	@RequestMapping
 	public ModelAndView query(Map<String, Object> out, HttpServletRequest request, Ad ad, Pager<AdDto> page){
 		ad.setDesignStatus("U");
-		page = adService.pageAdByConditions(ad, page);
+		page = adService.pageAdByConditions(ad, new AdSearchDto(), page);
 		return printJson(page, out);
 	}
 	

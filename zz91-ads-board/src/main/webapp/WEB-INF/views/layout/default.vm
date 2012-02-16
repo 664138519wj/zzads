@@ -3,7 +3,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>阿思拓 - 广告投放系统 V1.0.0-alpha</title>
+	<title>阿思拓 - 广告投放系统 V2.0</title>
 	#parse("/common/import.vm")
     #parse("/common/context.vm")
     <script type="text/javascript" src="#springUrl('/app/login.js')"></script>

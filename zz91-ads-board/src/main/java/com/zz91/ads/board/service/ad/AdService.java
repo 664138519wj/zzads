@@ -12,6 +12,7 @@ import com.zz91.ads.board.domain.ad.Ad;
 import com.zz91.ads.board.domain.ad.AdExactType;
 import com.zz91.ads.board.dto.Pager;
 import com.zz91.ads.board.dto.ad.AdDto;
+import com.zz91.ads.board.dto.ad.AdSearchDto;
 import com.zz91.ads.board.dto.ad.ExactTypeDto;
 
 /**
@@ -40,7 +41,7 @@ public interface AdService {
 	 * 分页读取广告信息 
 	 * 注：可按广告位，标题，广告主，开始时间，结束时间 申请人，审核状态，设计者查询
 	 */
-	public Pager<AdDto> pageAdByConditions(Ad ad, Pager<AdDto> pager);
+	public Pager<AdDto> pageAdByConditions(Ad ad, AdSearchDto adSearch, Pager<AdDto> pager);
 
 	/**
 	 * 保存并审核广告信息 

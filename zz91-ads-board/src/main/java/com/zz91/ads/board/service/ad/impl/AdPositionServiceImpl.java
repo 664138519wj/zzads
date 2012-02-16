@@ -76,7 +76,7 @@ public class AdPositionServiceImpl implements AdPositionService {
 		List<ExtTreeDto> tree = new ArrayList<ExtTreeDto>();
 		for (AdPosition p : list) {
 			ExtTreeDto node = new ExtTreeDto();
-			node.setId("node-" + String.valueOf(p.getId()));
+			node.setId(String.valueOf(p.getId()));
 			node.setText(p.getName());
 			node.setData(p.getId().toString());
 			// 要判断节点是否有子节点。

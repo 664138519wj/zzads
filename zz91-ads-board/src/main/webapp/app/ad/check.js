@@ -39,7 +39,7 @@ com.zz91.ads.board.ad.check.Grid = Ext.extend(Ext.grid.EditorGridPanel,{
 			{name:"width",mapping:"width"},
 			{name:"height",mapping:"height"},
 			{name:"a.sequence",mapping:"ad.sequence"},
-			{name:"searchExact",mapping:"ad.searchExact"},
+			{name:"searchExact",mapping:"ad.searchExact"}
 		]);
 		
 		var _store = new Ext.data.JsonStore({

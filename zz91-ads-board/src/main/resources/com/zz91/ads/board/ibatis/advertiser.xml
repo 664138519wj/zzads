@@ -81,7 +81,10 @@
 	<sql id="Query_Advertiser_By_Conditions">
 		<dynamic prepend="where">
 			<isNotEmpty prepend="and" property="advertiser.name">
-				name LIKE CONCAT(#advertiser.name#,'%')
+				name like concat(#advertiser.name#,'%')
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="advertiser.email">
+				email like concat(#advertiser.email#,'%')
 			</isNotEmpty>
 			<isNotEmpty prepend="and" property="advertiser.category">
 				category = #advertiser.category#

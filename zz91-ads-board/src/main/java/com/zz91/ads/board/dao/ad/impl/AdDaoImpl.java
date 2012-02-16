@@ -18,6 +18,7 @@ import com.zz91.ads.board.dao.ad.AdDao;
 import com.zz91.ads.board.domain.ad.Ad;
 import com.zz91.ads.board.dto.Pager;
 import com.zz91.ads.board.dto.ad.AdDto;
+import com.zz91.ads.board.dto.ad.AdSearchDto;
 import com.zz91.ads.board.dto.ad.ExactTypeDto;
 import com.zz91.ads.board.utils.AdConst;
 import com.zz91.util.Assert;
@@ -63,11 +64,12 @@ public class AdDaoImpl extends BaseDaoSupport implements AdDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<AdDto> queryAdByConditions(Ad ad, Pager<AdDto> pager) {
+	public List<AdDto> queryAdByConditions(Ad ad, AdSearchDto adSearch, Pager<AdDto> pager) {
 		Assert.notNull(pager, "the pager must not be null");
 
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("ad", ad);
+		param.put("search", adSearch);
 		param.put("pager", pager);
 
 		return getSqlMapClientTemplate().queryForList(
@@ -75,9 +77,10 @@ public class AdDaoImpl extends BaseDaoSupport implements AdDao {
 	}
 
 	@Override
-	public Integer queryAdByConditionsCount(Ad ad) {
+	public Integer queryAdByConditionsCount(Ad ad, AdSearchDto adSearch) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("ad", ad);
+		param.put("search", adSearch);
 		return (Integer) getSqlMapClientTemplate().queryForObject(
 				addSqlKeyPreFix(sqlPreFix, "queryAdByConditionsCount"), param);
 	}

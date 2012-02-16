@@ -11,6 +11,7 @@ import java.util.List;
 import com.zz91.ads.board.domain.ad.Ad;
 import com.zz91.ads.board.dto.Pager;
 import com.zz91.ads.board.dto.ad.AdDto;
+import com.zz91.ads.board.dto.ad.AdSearchDto;
 import com.zz91.ads.board.dto.ad.ExactTypeDto;
 
 /**
@@ -71,9 +72,9 @@ public interface AdDao {
 	 * 分页读取广告信息 
 	 * 注：可按广告位，标题，广告主，开始时间，结束时间 申请人，审核状态，设计者查询
 	 */
-	public List<AdDto> queryAdByConditions(Ad ad, Pager<AdDto> pager);
+	public List<AdDto> queryAdByConditions(Ad ad, AdSearchDto adSearch, Pager<AdDto> pager);
 
-	public Integer queryAdByConditionsCount(Ad ad);
+	public Integer queryAdByConditionsCount(Ad ad, AdSearchDto adSearch);
 
 	/**
 	 * 修改广告信息 

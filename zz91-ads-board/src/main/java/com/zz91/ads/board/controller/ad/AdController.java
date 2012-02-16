@@ -22,6 +22,9 @@ import com.zz91.ads.board.domain.ad.Ad;
 import com.zz91.ads.board.domain.ad.AdExactType;
 import com.zz91.ads.board.domain.ad.ExactType;
 import com.zz91.ads.board.dto.ExtResult;
+import com.zz91.ads.board.dto.Pager;
+import com.zz91.ads.board.dto.ad.AdDto;
+import com.zz91.ads.board.dto.ad.AdSearchDto;
 import com.zz91.ads.board.service.ad.AdService;
 import com.zz91.ads.board.service.ad.ExactTypeService;
 import com.zz91.ads.board.utils.AdConst;
@@ -121,5 +124,13 @@ public class AdController extends BaseController{
 			result.setData("/"+monthFolder+"/"+uploadedFile);
 		}
 		return printJson(result, out);
+	}
+	
+	@RequestMapping
+	public ModelAndView query(HttpServletRequest request, Map<String, Object> out,
+			Pager<AdDto> page, Ad ad, AdSearchDto adSearch){
+		
+		page = adService.pageAdByConditions(ad, adSearch, page);
+		return printJson(page, out);
 	}
 }

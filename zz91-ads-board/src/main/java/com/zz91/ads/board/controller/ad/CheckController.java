@@ -25,6 +25,7 @@ import com.zz91.ads.board.domain.ad.ExactType;
 import com.zz91.ads.board.dto.ExtResult;
 import com.zz91.ads.board.dto.Pager;
 import com.zz91.ads.board.dto.ad.AdDto;
+import com.zz91.ads.board.dto.ad.AdSearchDto;
 import com.zz91.ads.board.service.ad.AdPositionService;
 import com.zz91.ads.board.service.ad.AdService;
 import com.zz91.ads.board.service.ad.AdvertiserService;
@@ -65,7 +66,7 @@ public class CheckController extends BaseController{
 				ad.setAdvertiserId(-1);
 			}
 		}
-		page = adService.pageAdByConditions(ad, page);
+		page = adService.pageAdByConditions(ad, new AdSearchDto(), page);
 		return printJson(page, out);
 	}
 	

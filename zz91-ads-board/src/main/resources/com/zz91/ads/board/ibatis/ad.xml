@@ -106,39 +106,57 @@
 		WHERE id=#value#
 	</delete>
 	
-	<sql id="Query_Ad_By_Conditions">
+	<sql id="queryAdByConditions">
 		<dynamic prepend="where">
 			<isNotEmpty prepend="and" property="ad.positionId">
-				position_id = #ad.positionId#
+				a.position_id = #ad.positionId#
 			</isNotEmpty>
 			<isNotEmpty prepend="and" property="ad.adTitle">
-				ad_title LIKE CONCAT(#ad.adTitle#,'%')
+				a.ad_title LIKE CONCAT(#ad.adTitle#,'%')
 			</isNotEmpty>
 			<isNotEmpty prepend="and" property="ad.reviewStatus">
-				review_status = #ad.reviewStatus#
+				a.review_status = #ad.reviewStatus#
 			</isNotEmpty>
 			<isNotEmpty prepend="and" property="ad.onlineStatus">
-				online_status = #ad.onlineStatus#
+				a.online_status = #ad.onlineStatus#
 			</isNotEmpty>
 			
-			<isNotEmpty prepend="and" property="ad.advertiserId">
-				advertiser_id = #ad.advertiserId#
-			</isNotEmpty>
 			<isNotEmpty prepend="and" property="ad.applicant">
-				applicant = #ad.applicant#
+				a.applicant = #ad.applicant#
 			</isNotEmpty>
 			<isNotEmpty prepend="and" property="ad.designer">
-				designer = #ad.designer#
+				a.designer = #ad.designer#
 			</isNotEmpty>
-			<isNotEmpty prepend="and" property="ad.gmtStart">
-				#ad.gmtStart# >= gmt_start
+
+			<isNotEmpty prepend="and" property="search.startFrom">
+				a.gmt_start >= #search.startFrom#
 			</isNotEmpty>
-			<isNotEmpty prepend="and" property="ad.gmtPlanEnd">
-				#ad.gmtPlanEnd# >= gmt_plan_end
+			<isNotEmpty prepend="and" property="search.startTo">
+				#search.startTo# >= a.gmt_start
 			</isNotEmpty>
-			<isNotEmpty prepend="and" property="ad.designStatus">
-				design_status = #ad.designStatus#
+			<isNotEmpty prepend="and" property="search.planEndFrom">
+				a.gmt_plan_end >= #search.planEndFrom#
 			</isNotEmpty>
+			<isNotEmpty prepend="and" property="search.planEndTo">
+				#search.planEndTo# >= a.gmt_plan_end
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="and" property="search.email">
+				av.email = #search.email#
+			</isNotEmpty>
+			
+			<isNotEmpty prepend="and" property="search.anchorPoint">
+				a.id exists (select ad_id from ad_exact_type aet where a.id=aet.ad_id
+					and aet.anchor_point=#search.anchorPoint#
+					<isNotEmpty prepend="and" property="ad.positionId">
+						aet.ad_position_id = #ad.positionId#
+					</isNotEmpty>
+					<isNotEmpty prepend="and" property="search.exactTypeId">
+						aet.exact_type_id=#search.exactTypeId#
+					</isNotEmpty>
+				)
+			</isNotEmpty>
+			
 		</dynamic>
 	</sql>
 	
@@ -150,7 +168,7 @@
 		FROM ad a
 		inner join ad_position ap on a.position_id=ap.id
 		inner join advertiser av on a.advertiser_id = av.id
-		<include refid="Query_Ad_By_Conditions" />
+		<include refid="queryAdByConditions" />
 		<include refid="common.pageOrderBy" />
 		<include refid="common.pageLimit" />
 	</select>
@@ -159,7 +177,9 @@
 		SELECT 
 			COUNT(0)
 		FROM ad
-		<include refid="Query_Ad_By_Conditions" />
+		inner join ad_position ap on a.position_id=ap.id
+		inner join advertiser av on a.advertiser_id = av.id
+		<include refid="queryAdByConditions" />
 	</select>
 	
 	<update id="updateAd" parameterClass="ad">

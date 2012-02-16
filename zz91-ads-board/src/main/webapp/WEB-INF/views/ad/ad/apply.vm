@@ -1,28 +1,19 @@
-<script type="text/javascript" src="#springUrl('/app/ad/position.js')" ></script>
-<script type="text/javascript" src="#springUrl('/app/ad/material.js')" ></script>
-<script type="text/javascript" src="#springUrl('/app/ad/advertiser.js')" ></script>
-<script type="text/javascript" src="#springUrl('/app/ad/ad.js')" ></script>
-<script type="text/javascript">
-var AD = new function() {
-	this.STEP_ONE_WIN="STEP_ONE_WIN";
-	this.STEP_TWO_WIN="STEP_TWO_WIN";
-}
+#set($layout="/layout/defaultS.vm")
+<script type="text/javascript" src="#springUrl('/appv2/util.js')" ></script>
+<script type="text/javascript" src="#springUrl('/appv2/ad/advertiser.js')" ></script>
+<script type="text/javascript" src="#springUrl('/appv2/ad/booking.js')" ></script>
+<script type="text/javascript" src="#springUrl('/appv2/ad/ad.js')" ></script>
 
+<script type="text/javascript">
 Ext.onReady(function() {
 
-/*
-	var grid = new com.zz91.ads.board.ad.ad.Grid({
-		layout:"fit",
+	var applyForm=Ext.create("com.zz91.ads.board.ad.ad.ApplyForm",{
 		region:"center"
 	});
 	
-	var viewport = new Ext.Viewport({
+	Ext.create("Ext.container.Viewport",{
 		layout:"border",
-		items:[grid]
+		items:[applyForm]
 	});
-*/
-
-	com.zz91.ads.board.ad.ad.AdEditWin();
-	
 });
 </script>

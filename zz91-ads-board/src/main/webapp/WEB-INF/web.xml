@@ -63,7 +63,7 @@
 		<servlet-name>SpringMVC</servlet-name>
 		<url-pattern>*.htm</url-pattern>
 	</servlet-mapping>
-		<servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>SpringMVC</servlet-name>
 		<url-pattern>/index.htm</url-pattern>
 	</servlet-mapping>

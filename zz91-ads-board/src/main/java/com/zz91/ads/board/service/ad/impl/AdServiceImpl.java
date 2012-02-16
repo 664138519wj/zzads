@@ -19,6 +19,7 @@ import com.zz91.ads.board.domain.ad.Ad;
 import com.zz91.ads.board.domain.ad.AdExactType;
 import com.zz91.ads.board.dto.Pager;
 import com.zz91.ads.board.dto.ad.AdDto;
+import com.zz91.ads.board.dto.ad.AdSearchDto;
 import com.zz91.ads.board.dto.ad.ExactTypeDto;
 import com.zz91.ads.board.service.ad.AdService;
 import com.zz91.util.Assert;
@@ -110,7 +111,7 @@ public class AdServiceImpl implements AdService {
 	}
 
 	@Override
-	public Pager<AdDto> pageAdByConditions(Ad ad, Pager<AdDto> pager) {
+	public Pager<AdDto> pageAdByConditions(Ad ad, AdSearchDto adSearch, Pager<AdDto> pager) {
 		Assert.notNull(pager, "the pager nust not be null");
 		if(pager.getSort()==null){
 			pager.setSort("a.gmt_start");
@@ -118,8 +119,8 @@ public class AdServiceImpl implements AdService {
 		if(pager.getDir()==null){
 			pager.setDir("desc");
 		}
-		pager.setRecords(adDao.queryAdByConditions(ad, pager));
-		pager.setTotals(adDao.queryAdByConditionsCount(ad));
+		pager.setRecords(adDao.queryAdByConditions(ad, adSearch, pager));
+		pager.setTotals(adDao.queryAdByConditionsCount(ad, adSearch));
 		
 		return pager;
 	}

@@ -14,6 +14,7 @@ import com.zz91.ads.board.domain.ad.Ad;
 import com.zz91.ads.board.domain.ad.AdExactType;
 import com.zz91.ads.board.dto.Pager;
 import com.zz91.ads.board.dto.ad.AdDto;
+import com.zz91.ads.board.dto.ad.AdSearchDto;
 import com.zz91.ads.board.service.ad.AdService;
 import com.zz91.ads.board.test.BaseTestCase;
 
@@ -85,7 +86,7 @@ public class AdServiceImpTest extends BaseTestCase {
 		Pager<AdDto> pager = new Pager<AdDto>();
 		Pager<AdDto> page = new Pager<AdDto>();
 
-		page = service.pageAdByConditions(ad, pager);
+		page = service.pageAdByConditions(ad, new AdSearchDto(), pager);
 
 		assertNotNull(page);
 		assertNotNull(page.getTotals());
@@ -105,7 +106,7 @@ public class AdServiceImpTest extends BaseTestCase {
 		ad.setAdTitle("分页测试");
 		pager = new Pager<AdDto>();
 		page = new Pager<AdDto>();
-		page = service.pageAdByConditions(ad, pager);
+		page = service.pageAdByConditions(ad, new AdSearchDto(), pager);
 
 		assertNotNull(page);
 		assertNotNull(page.getTotals());

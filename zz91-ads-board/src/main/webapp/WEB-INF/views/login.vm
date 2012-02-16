@@ -1,3 +1,4 @@
+#set($layout="/layout/defaultS.vm")
 <script type="text/javascript" >
 	Ext.onReady(function(){
 		com.zz91.ads.board.login.UserLoginWin(function(){
