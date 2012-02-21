@@ -6,6 +6,7 @@
 package com.zz91.ads.board.dao.ad;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import com.zz91.ads.board.domain.ad.Ad;
@@ -124,4 +125,6 @@ public interface AdDao {
 	public Integer updateSequence(BigDecimal sequence, Integer id);
 	
 	public Integer updatePosition(Integer id, Integer positionId);
+	
+	public Integer countExistsAd(Date gmtPlanEnd, String keywords, Integer positionId);
 }

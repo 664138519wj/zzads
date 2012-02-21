@@ -134,6 +134,7 @@
 			<isNotEmpty prepend="and" property="search.startTo">
 				#search.startTo# >= a.gmt_start
 			</isNotEmpty>
+			
 			<isNotEmpty prepend="and" property="search.planEndFrom">
 				a.gmt_plan_end >= #search.planEndFrom#
 			</isNotEmpty>
@@ -146,7 +147,7 @@
 			</isNotEmpty>
 			
 			<isNotEmpty prepend="and" property="search.anchorPoint">
-				a.id exists (select ad_id from ad_exact_type aet where a.id=aet.ad_id
+				exists (select ad_id from ad_exact_type aet where a.id=aet.ad_id
 					and aet.anchor_point=#search.anchorPoint#
 					<isNotEmpty prepend="and" property="ad.positionId">
 						aet.ad_position_id = #ad.positionId#
@@ -176,7 +177,7 @@
 	<select id="queryAdByConditionsCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
 		SELECT 
 			COUNT(0)
-		FROM ad
+		FROM ad a
 		inner join ad_position ap on a.position_id=ap.id
 		inner join advertiser av on a.advertiser_id = av.id
 		<include refid="queryAdByConditions" />
@@ -188,10 +189,15 @@
 			ad_target_url = #adTargetUrl#,
 			ad_title = #adTitle#,
 			gmt_start = #gmtStart#,
-			gmt_plan_end = #gmtPlanEnd#,
+			<isNull property="gmtPlanEnd">
+				gmt_plan_end = 0,
+			</isNull>
+			<isNotNull property="gmtPlanEnd">
+				gmt_plan_end = #gmtPlanEnd#,
+			</isNotNull>
 			ad_description = #adDescription#,
 			ad_content=#adContent#,
-			sequence=#sequence#,
+			<!-- sequence=#sequence#, -->
 			<isNotEmpty property="adContent">
 				gmt_content_modified=now(),
 			</isNotEmpty>
@@ -203,6 +209,7 @@
 				design_status=#designStatus#,
 				designer=#designer#,
 			</isNotEmpty>
+			remark=#remark#,
 			gmt_modified=now()
 		where id = #id#
 	</update>
@@ -316,5 +323,24 @@
 		where id=#id#
 	</update>
 	
+	<select id="countExistsAd" parameterClass="java.util.HashMap" resultClass="java.lang.Integer" >
+		select count(*) from ad a
+		where
+			review_status='Y'
+		<isNotEmpty prepend="and" property="positionId">
+			a.position_id = #positionId#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="gmtPlanEnd">
+			a.gmt_plan_end >= #gmtPlanEnd#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="keywords">
+			exists (select ad_id from ad_exact_type aet where a.id=aet.ad_id
+				and aet.anchor_point=#keywords#
+				<isNotEmpty prepend="and" property="positionId">
+					aet.ad_position_id = #positionId#
+				</isNotEmpty>
+			)
+		</isNotEmpty>
+	</select>
 	
 </sqlMap>

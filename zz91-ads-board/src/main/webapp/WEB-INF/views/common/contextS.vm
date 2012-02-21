@@ -5,6 +5,7 @@
 	var Context = new function(){
 		this.ROOT = "#springUrl('')";
 		this.ROOT_IMAGE="http://img1.zz91.com/ads";
+		this.IMG0="http://img0.zz91.com";
 		this.PAGE_SIZE = 20;
 		this.LOGIN_USER="$!{loginuser}";
 		this.ADVERTISER_CATEGORY=["阿思拓","再生通用户"];

@@ -16,20 +16,17 @@ Ext.define("CategoryTreeModel",{
 Ext.define("com.zz91.util.CategoryCombo",{
 	extend:"Ext.form.ComboBox",
 	initComponent:function(){
-		var _autoLoad=this.getAl();
-		var _url=this.getQueryUrl()+this.getRootCode();
 		
 		var states=Ext.create("Ext.data.Store",{
-			model:"CategoryModel",
+			model:this.getCategoryModel(),
 			proxy:{
 				type:"ajax",
-				url:_url,
+				url:this.getQueryUrl()+this.getRootCode(),
 				reader: {
 					type: 'json'
-//					root: 'records'
-		        }
+				}
 			},
-			autoLoad:_autoLoad
+			autoLoad:this.getAl()
 		});
 		
 		var c={
@@ -42,12 +39,14 @@ Ext.define("com.zz91.util.CategoryCombo",{
 		this.callParent();
 	},
 	rootCode:"",
-	queryUrl:Context.ROOT+"/zz91/common/categoryCombo.htm?preCode=",
+	queryUrl:Context.ROOT+"/path/to/query/url",
 	al:true,
+	categoryModel:"CategoryModel",
 	config:{
 		queryUrl:null,
 		rootCode:null,
-		al:true
+		al:true,
+		categoryModel:null
 	},
 	displayField: 'label',
 	valueField: 'code'
@@ -87,8 +86,9 @@ Ext.define("com.zz91.util.LocalCombo",{
 Ext.define("com.zz91.util.Tree",{
 	extend:"Ext.tree.Panel",
 	initComponent:function(){
+		
 		var store=Ext.create("Ext.data.TreeStore",{
-			nodeParam:"parentCode",
+			nodeParam:this.getNodeParam(),
 			defaultRootId:this.getRootCode(),
 			model:this.getTreeModel(),
 			proxy:{
@@ -112,13 +112,15 @@ Ext.define("com.zz91.util.Tree",{
 
 		this.callParent();
 	},
+	nodeParam:"parentCode",
 	rootCode:"",
 	treeModel:"CategoryTreeModel",
 	queryUrl:Context.ROOT+"/zz91/common/categoryTreeNode.htm",
 	config:{
 		queryUrl:null,
 		rootCode:null,
-		treeModel:"CategoryTreeModel"
+		treeModel:"CategoryTreeModel",
+		nodeParam:null
 	}
 });
 
@@ -129,6 +131,7 @@ Ext.define("com.zz91.util.TreeSelectorWin",{
 		var tree=Ext.create("com.zz91.util.Tree",{
 			rootCode:this.getRootCode(),
 			treeModel:this.getTreeModel(),
+			nodeParam:this.getNodeParam(),
 			queryUrl:this.getQueryUrl()
 		});
 		
@@ -158,13 +161,15 @@ Ext.define("com.zz91.util.TreeSelectorWin",{
 		this.callParent();
 	},
 	rootCode:"",
+	nodeParam:"parentCode",
 	treeModel:"CategoryTreeModel",
 	queryUrl:Context.ROOT+"/zz91/common/categoryTreeNode.htm",
 	config:{
 		queryUrl:null,
 		rootCode:null,
 		initCode:null,
-		treeModel:"CategoryTreeModel"
+		treeModel:"CategoryTreeModel",
+		nodeParam:null
 	},
 	callbackFn:function(nodeInterface){
 	},

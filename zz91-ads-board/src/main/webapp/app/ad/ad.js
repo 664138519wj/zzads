@@ -171,7 +171,7 @@ com.zz91.ads.board.ad.ad.AdEditForm=Ext.extend(Ext.form.FormPanel, {
 						name:"gmtPlanEndStr",
 						fieldLabel:"结束时间",
 						format : "Y-m-d",
-						value:new Date(),
+//						value:new Date(),
 						allowBlank:true
 					}]
 				},

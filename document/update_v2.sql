@@ -40,3 +40,8 @@ ALTER TABLE `advertiser`
  ADD INDEX `idx_category`(`category`),
  ADD INDEX `idx_deleted`(`deleted`);
 
+ALTER TABLE `ad` 
+ MODIFY COLUMN `gmt_start` DATETIME  NOT NULL COMMENT '广告生效时间',
+ MODIFY COLUMN `gmt_plan_end` DATETIME  NOT NULL DEFAULT 0 COMMENT '计划下线时间
+可以不设置';
+

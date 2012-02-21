@@ -7,19 +7,17 @@
 
 Ext.onReady(function() {
 
-	var adGrid=Ext.create("com.zz91.ads.board.ad.ad.SimpleGrid",{
+	var adGrid=Ext.create("com.zz91.ads.board.ad.ad.SaleGrid",{
 		id:"mainadgrid",
 		region:"center"
 	});
-	
-	//adGrid.initDefault("$!{planEndFrom}");
 	
 	var bookingGrid=Ext.create("com.zz91.ads.board.ad.booking.BaseGrid",{
 		id:"bookinggrid",
 		split:true,
 		region:"south",
-		crmId:"",
-		height:200
+		crmId:"$!{crmId}",
+		height:250
 	});
 	
 	var tree=Ext.create("com.zz91.util.Tree", {

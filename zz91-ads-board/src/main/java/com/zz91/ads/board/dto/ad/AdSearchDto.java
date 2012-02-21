@@ -27,6 +27,7 @@ public class AdSearchDto implements java.io.Serializable {
 	
 	private String anchorPoint;
 	private Integer exactTypeId;
+	private Integer isNoEnd;
 	/**
 	 * @return the email
 	 */
@@ -111,6 +112,17 @@ public class AdSearchDto implements java.io.Serializable {
 	public void setExactTypeId(Integer exactTypeId) {
 		this.exactTypeId = exactTypeId;
 	}
+	/**
+	 * @return the isNoEnd
+	 */
+	public Integer getIsNoEnd() {
+		return isNoEnd;
+	}
+	/**
+	 * @param isNoEnd the isNoEnd to set
+	 */
+	public void setIsNoEnd(Integer isNoEnd) {
+		this.isNoEnd = isNoEnd;
+	}
 
-	
 }

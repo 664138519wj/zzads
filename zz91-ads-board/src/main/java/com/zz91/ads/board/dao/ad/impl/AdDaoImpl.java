@@ -7,6 +7,7 @@ package com.zz91.ads.board.dao.ad.impl;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -210,6 +211,15 @@ public class AdDaoImpl extends BaseDaoSupport implements AdDao {
 		root.put("positionId", positionId);
 		root.put("id", id);
 		return getSqlMapClientTemplate().update(addSqlKeyPreFix(sqlPreFix, "updatePosition"), root);
+	}
+
+	@Override
+	public Integer countExistsAd(Date gmtPlanEnd, String keywords, Integer positionId) {
+		Map<String, Object> root=new HashMap<String, Object>();
+		root.put("gmtPlanEnd", gmtPlanEnd);
+		root.put("keywords", keywords);
+		root.put("positionId", positionId);
+		return (Integer) getSqlMapClientTemplate().queryForObject(addSqlKeyPreFix(sqlPreFix, "countExistsAd"), root);
 	}
 
 }

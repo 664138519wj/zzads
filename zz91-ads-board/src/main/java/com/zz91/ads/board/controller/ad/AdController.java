@@ -5,13 +5,14 @@
  */
 package com.zz91.ads.board.controller.ad;
 
-import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +28,11 @@ import com.zz91.ads.board.dto.ad.AdDto;
 import com.zz91.ads.board.dto.ad.AdSearchDto;
 import com.zz91.ads.board.service.ad.AdService;
 import com.zz91.ads.board.service.ad.ExactTypeService;
-import com.zz91.ads.board.utils.AdConst;
-import com.zz91.ads.board.utils.MvcUpload;
+import com.zz91.util.auth.AuthConst;
+import com.zz91.util.auth.AuthUtils;
+import com.zz91.util.auth.SessionUser;
 import com.zz91.util.datetime.DateUtil;
+import com.zz91.util.file.MvcUpload;
 import com.zz91.util.lang.StringUtils;
 
 /**
@@ -44,28 +47,42 @@ public class AdController extends BaseController{
 	@Resource
 	private ExactTypeService exactTypeService;
 	
+	final static String SALE_ACCOUNT="adminsale";
+	final static String SALE_ACCOUNT_PASSWORD="zj88friend";
 	
 	@RequestMapping
-	public void index(Map<String, Object> model){
-		
+	public ModelAndView index(HttpServletRequest request, HttpServletResponse response, Map<String, Object> out){
+		return new ModelAndView();
 	}
 	
 	@RequestMapping
-	public ModelAndView apply(Map<String, Object> model){
+	public ModelAndView saleAd(HttpServletRequest request, HttpServletResponse response, Map<String, Object> out, Integer crmId){
+		out.put("crmId", crmId);
+		
+		SessionUser user=getCachedUser(request);
+		if(user==null){
+			user = AuthUtils.getInstance().validateUser(response, SALE_ACCOUNT, SALE_ACCOUNT_PASSWORD, AuthConst.PROJECT_CODE, AuthConst.PROJECT_PASSWORD);
+			setSessionUser(request, user);
+		}
+		
+		return new ModelAndView();
+	}
+	
+	@RequestMapping
+	public ModelAndView apply(Map<String, Object> out){
 		return null;
 	}
 	
 	@RequestMapping
-	public ModelAndView applyAd(HttpServletRequest request, Map<String, Object> out, Ad ad, String gmtStartStr, String gmtPlanEndStr){
-		try {
-			ad.setGmtStart(DateUtil.getDate(gmtStartStr, AdConst.FORMAT_DATE));
-			if(StringUtils.isNotEmpty(gmtPlanEndStr)){
-				ad.setGmtPlanEnd(DateUtil.getDate(gmtPlanEndStr, AdConst.FORMAT_DATE));
-			}
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+	public ModelAndView query(HttpServletRequest request, Map<String, Object> out,
+			Pager<AdDto> page, Ad ad, AdSearchDto adSearch){
 		
+		page = adService.pageAdByConditions(ad, adSearch, page);
+		return printJson(page, out);
+	}
+	
+	@RequestMapping
+	public ModelAndView applyAd(HttpServletRequest request, Map<String, Object> out, Ad ad){
 		ad.setApplicant(getCachedUser(request).getAccount());
 		Integer i = adService.applyAd(ad);
 		ExtResult result = new ExtResult();
@@ -77,15 +94,64 @@ public class AdController extends BaseController{
 	}
 	
 	@RequestMapping
+	public ModelAndView queryAdById(HttpServletRequest request, Map<String, Object> out, Integer id){
+		List<Ad> list= new ArrayList<Ad>();
+		list.add(adService.queryAdById(id));
+		return printJson(list, out);
+	}
+	
+	@RequestMapping
+	public ModelAndView upload(HttpServletRequest request,
+			Map<String, Object> out) {
+		ExtResult result = new ExtResult();
+		Long monthFolder=DateUtil.getMillis(DateUtil.getNowMonthFirstDay());
+		String uploadedFile;
+		try {
+			uploadedFile = MvcUpload.localUpload(request, MvcUpload.getDestRoot()+"/ads/"+monthFolder, UUID.randomUUID().toString());
+			if (StringUtils.isNotEmpty(uploadedFile)) {
+				result.setSuccess(true);
+				result.setData("/"+monthFolder+"/"+uploadedFile);
+			}
+		} catch (Exception e) {
+		}
+		return printJson(result, out);
+	}
+	
+	@RequestMapping
+	public ModelAndView updateOnly(HttpServletRequest request, Map<String, Object> out, Ad ad){
+		Integer i=adService.saveOnly(ad);
+		ExtResult result = new ExtResult();
+		if(i!=null && i.intValue()>0){
+			result.setSuccess(true);
+		}
+		return printJson(result, out);
+	}
+	
+	@RequestMapping
+	public ModelAndView updateAndCheck(HttpServletRequest request, Map<String, Object> out, Ad ad){
+		ad.setReviewer(getCachedUser(request).getAccount());
+		Integer i=adService.saveAndCheck(ad);
+		ExtResult result = new ExtResult();
+		if(i!=null && i.intValue()>0){
+			result.setSuccess(true);
+		}
+		return printJson(result, out);
+	}
+	
+	@RequestMapping
 	public ModelAndView queryAdExact(HttpServletRequest request, Map<String, Object> out, Integer aid){
 		return printJson(adService.queryAdExact(aid), out);
 	}
 	
 	@RequestMapping
-	public ModelAndView queryExactTypeOfAd(HttpServletRequest request, Map<String, Object> out, Integer aid){
-		Integer pid=adService.queryPositionOfAd(aid);
-		List<ExactType> list=exactTypeService.queryExactTypeByAdPositionId(pid);
-		return printJson(list, out);
+	public ModelAndView deleteAdExact(HttpServletRequest request, Map<String, Object> out, Integer id){
+		Integer i=adService.deleteAdExactTypeById(id);
+		ExtResult result = new ExtResult();
+		if(i!=null && i.intValue()>0){
+			result.setSuccess(true);
+			result.setData(i);
+		}
+		return printJson(result, out);
 	}
 	
 	@RequestMapping
@@ -101,36 +167,61 @@ public class AdController extends BaseController{
 	}
 	
 	@RequestMapping
-	public ModelAndView deleteAdExact(HttpServletRequest request, Map<String, Object> out, Integer id){
-		Integer i=adService.deleteAdExactTypeById(id);
+	public ModelAndView queryExactTypeOfAd(HttpServletRequest request, Map<String, Object> out, Integer aid){
+		Integer pid=adService.queryPositionOfAd(aid);
+		List<ExactType> list=exactTypeService.queryExactTypeByAdPositionId(pid);
+		return printJson(list, out);
+	}
+	
+	@RequestMapping
+	public ModelAndView checkAd(HttpServletRequest request, Map<String, Object> out, String reviewStatus, Integer id){
+		Integer i;
+		String account=getCachedUser(request).getAccount();
+		if(StringUtils.isEmpty(reviewStatus) || "N".equals(reviewStatus)){
+			i=adService.back(id,account);
+		}else{
+			i=adService.pass(id,account);
+		}
 		ExtResult result = new ExtResult();
 		if(i!=null && i.intValue()>0){
 			result.setSuccess(true);
-			result.setData(i);
 		}
 		return printJson(result, out);
 	}
 	
-	final static String UPLOAD_ROOT = "/usr/data/resources/ads";
-	
 	@RequestMapping
-	public ModelAndView upload(HttpServletRequest request,
-			Map<String, Object> out) {
+	public ModelAndView moveAd(HttpServletRequest request, Map<String, Object> out, Integer id, Integer positionId){
+		Integer i = adService.updatePosition(id, positionId);
 		ExtResult result = new ExtResult();
-		Long monthFolder=DateUtil.getMillis(DateUtil.getNowMonthFirstDay());
-		String uploadedFile = MvcUpload.localUpload(request, UPLOAD_ROOT+"/"+monthFolder, UUID.randomUUID().toString());
-		if (StringUtils.isNotEmpty(uploadedFile)) {
+		if(i!=null && i.intValue()>0){
 			result.setSuccess(true);
-			result.setData("/"+monthFolder+"/"+uploadedFile);
 		}
 		return printJson(result, out);
 	}
 	
 	@RequestMapping
-	public ModelAndView query(HttpServletRequest request, Map<String, Object> out,
-			Pager<AdDto> page, Ad ad, AdSearchDto adSearch){
-		
-		page = adService.pageAdByConditions(ad, adSearch, page);
-		return printJson(page, out);
+	public ModelAndView publishAd(HttpServletRequest request, Map<String, Object> out, Integer id, String onlineStatus){
+		Integer i;
+		if(onlineStatus!=null && "Y".equals(onlineStatus)){
+			i = adService.setOnline(id);
+		}else{
+			i = adService.setOffline(id);
+		}
+		ExtResult result = new ExtResult();
+		if(i!=null && i.intValue()>0){
+			result.setSuccess(true);
+		}
+		return printJson(result, out);
 	}
+	
+	@RequestMapping
+	public ModelAndView deleteAd(HttpServletRequest request, Map<String, Object> out, Integer id){
+		Integer i = adService.deleteAdById(id);
+		ExtResult result = new ExtResult();
+		if(i!=null && i.intValue()>0){
+			result.setSuccess(true);
+		}
+		return printJson(result, out);
+	}
+	
 }

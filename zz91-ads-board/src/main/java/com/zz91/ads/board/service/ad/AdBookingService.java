@@ -18,4 +18,10 @@ public interface AdBookingService {
 	
 	public Pager<AdBooking> pageBooking(AdBooking booking, Pager<AdBooking> page);
 	
+	public Integer createBooking(AdBooking booking);
+	
+	public Integer deleteBooking(Integer id);
+	
+	public Boolean bookingEnable(Integer positionId, String keywords);
+	
 }
