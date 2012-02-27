@@ -84,7 +84,12 @@
 			#adTargetUrl#,
 			#onlineStatus#,
 			#gmtStart#,
+			<isNull property="gmtPlanEnd">
+			0,
+			</isNull>
+			<isNotNull property="gmtPlanEnd">
 			#gmtPlanEnd#,
+			</isNotNull>
 			#remark#,
 			#applicant#,
 			#reviewer#,
