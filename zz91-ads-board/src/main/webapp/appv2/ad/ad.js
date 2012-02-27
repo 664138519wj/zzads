@@ -765,6 +765,19 @@ Ext.define("com.zz91.ads.board.ad.ad.SimpleGrid", {
 					
 					win.show();
 				}
+			},{
+				text:"缓存",
+				menu:[{
+					text:"缓存管理",
+					handler:function(){
+						window.open("http://gg.zz91.com/cacheManager");
+					}
+				},{
+					text:"广告跟踪",
+					handler:function(){
+						window.open("http://gg.zz91.com/tracking");
+					}
+				}]
 			},"->",{
 				xtype:"textfield",
 				emptyText:"请输入Email",
