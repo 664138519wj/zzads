@@ -19,7 +19,8 @@
     			text:"所有分类",
     			children:[
     				{text:Context.ADVERTISER_CATEGORY[0],leaf:true,data:"0"},
-    				{text:Context.ADVERTISER_CATEGORY[1],leaf:true,data:"1"}
+    				{text:Context.ADVERTISER_CATEGORY[1],leaf:true,data:"1"},
+    				{text:Context.ADVERTISER_CATEGORY[2],leaf:true,data:"2"}
     			]
     		})
     	});
