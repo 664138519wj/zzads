@@ -93,7 +93,8 @@ Ext.define("com.zz91.ads.board.ad.advertiser.MainGrid",{
 					editable:false,
 					localData:[
                         {name : Context.ADVERTISER_CATEGORY[0],   value: "0"},
-                        {name : Context.ADVERTISER_CATEGORY[1],  value: "1"}
+                        {name : Context.ADVERTISER_CATEGORY[1],  value: "1"},
+                        {name : Context.ADVERTISER_CATEGORY[2],  value: "2"}
                     ],
 					listeners:{
 						"change":function(field,nv,ov,e){

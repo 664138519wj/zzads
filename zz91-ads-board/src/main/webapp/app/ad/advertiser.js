@@ -288,7 +288,8 @@ com.zz91.ads.board.ad.advertiser.editForm=Ext.extend(Ext.form.FormPanel, {
 	                        fields : ["name", "value"],
 	                        data   : [
 	                            {name : Context.ADVERTISER_CATEGORY[0],   value: "0"},
-	                            {name : Context.ADVERTISER_CATEGORY[1],  value: "1"}
+	                            {name : Context.ADVERTISER_CATEGORY[1],  value: "1"},
+	                            {name : Context.ADVERTISER_CATEGORY[2],  value: "2"},
 //	                            {name : "其他",  value: "2"}
 	                        ]
 	                    })
@@ -565,7 +566,8 @@ com.zz91.ads.board.ad.advertiser.AdvertiserGrid = Ext.extend(Ext.grid.GridPanel,
                         fields : ["name", "value"],
                         data   : [
                             {name : Context.ADVERTISER_CATEGORY[0],   value: "0"},
-                            {name : Context.ADVERTISER_CATEGORY[1],  value: "1"}
+                            {name : Context.ADVERTISER_CATEGORY[1],  value: "1"},
+                            {name : Context.ADVERTISER_CATEGORY[2],  value: "2"}
                         ]
                     }),
                     listeners:{
