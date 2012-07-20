@@ -9,7 +9,9 @@
     }
     
     Ext.onReady(function() {
-    	var _grid=new com.zz91.ads.board.ad.advertiser.Grid({
+    	##var _grid=new com.zz91.ads.board.ad.advertiser.Grid({
+		var _grid=new com.zz91.ads.board.ad.advertiser.AdvertiserGrid({
+					
     		id:ADVERTISER.GRID,
     		region:"center"
     	});
