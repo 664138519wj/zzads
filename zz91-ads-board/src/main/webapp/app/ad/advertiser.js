@@ -15,7 +15,7 @@ com.zz91.ads.board.ad.advertiser.Grid = Ext.extend(Ext.grid.GridPanel, {
 
 		var _store = new Ext.data.JsonStore({
 			root:"records",
-			totalProperty:"total",
+			totalProperty:"totals",
 			remoteSort:true,
 			fields:_fields,
 			url:_url,
