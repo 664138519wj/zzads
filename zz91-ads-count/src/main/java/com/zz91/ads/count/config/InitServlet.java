@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServlet;
 
 import com.zz91.ads.count.thread.ControlThread;
 import com.zz91.util.cache.MemcachedUtils;
+import com.zz91.util.db.DBUtils;
 import com.zz91.util.db.pool.DBPoolFactory;
 
 /**
@@ -27,6 +28,7 @@ public class InitServlet extends HttpServlet {
 	}
 
 	public void destroy() {
-
+		ControlThread.shutdown();
+		MemcachedUtils.getInstance().getClient().shutdown();
 	}
 }

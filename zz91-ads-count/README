@@ -1,0 +1,5 @@
+UPDATE
+
+2012-10-26 v1.0.1
+1.改进 ControlThread，增加 shutdown() 方法，用于在系统关闭时处理释放线程池
+2.更改版本号，去除SNAPSHOT，改为正式版本

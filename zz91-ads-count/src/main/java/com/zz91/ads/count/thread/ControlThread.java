@@ -21,7 +21,7 @@ public class ControlThread extends Thread {
 
 	private static TrackingThreadPool mainPool; // 行为跟踪线程池
 
-	private int corePoolSize = 5; // 池中最小线程数量：2
+	private int corePoolSize = 2; // 池中最小线程数量：2
 	private int maximumPoolSize = 12; // 同时存在的最大线程数量：10
 	private long keepAliveTime = 5; // 线程空闲保持时间：5秒
 	private int workQueueSize = 200; // 工作队列最大值:200
@@ -34,7 +34,9 @@ public class ControlThread extends Thread {
 	private long waringValue = 10; // 警戒值,当超过警戒值,可以发出警告
 	
 	private static long lastMonitorTime=0;
-
+	
+	public static boolean RUNNING = true;
+	
 	public ControlThread(int corePoolSize, int maximumPoolSize,
 			long keepAliveTime, int workQueueSize) {
 		this.corePoolSize = corePoolSize;
@@ -61,7 +63,13 @@ public class ControlThread extends Thread {
 
 	// 每一秒钟检查一次处理状态
 	public void run() {
-		do {
+		while(RUNNING) {
+			
+			
+			if(mainPool==null){
+				break;
+			}
+			
 			numTask = mainPool.getNumTask();
 			totalTime = mainPool.getTotalTime();
 			numQueue = mainPool.getQueue().size();
@@ -74,7 +82,7 @@ public class ControlThread extends Thread {
 			} catch (InterruptedException e) {
 				break;
 			}
-		} while (true);
+		} ;
 
 	}
 	
@@ -114,5 +122,9 @@ public class ControlThread extends Thread {
 		return activeThread;
 	}
 	
+	public static void shutdown(){
+		RUNNING=false;
+		mainPool.shutdown();
+	}
 	
 }

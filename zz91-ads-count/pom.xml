@@ -10,7 +10,7 @@
 	<groupId>com.zz91</groupId>
 	<artifactId>zz91-ads-count</artifactId>
 	<packaging>war</packaging>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<name>zz91-ads-count</name>
 	<dependencies>
 		<dependency>
@@ -143,7 +143,7 @@
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<configuration>
 					<path>/ads</path>
-					<port>580</port>
+					<port>8580</port>
 				</configuration>
 			</plugin>
 		</plugins>
