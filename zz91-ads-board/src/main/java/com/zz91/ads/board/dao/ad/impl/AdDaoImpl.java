@@ -222,4 +222,12 @@ public class AdDaoImpl extends BaseDaoSupport implements AdDao {
 		return (Integer) getSqlMapClientTemplate().queryForObject(addSqlKeyPreFix(sqlPreFix, "countExistsAd"), root);
 	}
 
+	@Override
+	public Integer updateRent(Integer id, String rent) {
+		Map<String, Object> root=new HashMap<String, Object>();
+		root.put("id", id);
+		root.put("expiredRent", rent);
+		return getSqlMapClientTemplate().update(addSqlKeyPreFix(sqlPreFix, "updateRent"), root);
+	}
+
 }

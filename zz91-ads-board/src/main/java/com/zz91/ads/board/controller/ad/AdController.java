@@ -224,4 +224,14 @@ public class AdController extends BaseController{
 		return printJson(result, out);
 	}
 	
+	@RequestMapping
+	public ModelAndView removeRent(HttpServletRequest request, Map<String, Object> out, Integer id){
+		Integer i = adService.removeRent(id);
+		ExtResult result = new ExtResult();
+		if(i!=null && i.intValue()>0){
+			result.setSuccess(true);
+		}
+		return printJson(result, out);
+	}
+	
 }

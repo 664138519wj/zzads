@@ -124,4 +124,6 @@ public interface AdService {
 	
 	public Integer updatePosition(Integer id, Integer positionId);
 	
+	public Integer removeRent(Integer id);
+	
 }

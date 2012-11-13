@@ -10,7 +10,7 @@
 	<groupId>com.zz91</groupId>
 	<artifactId>zz91-ads-board</artifactId>
 	<packaging>war</packaging>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<name>zz91-ads-board</name>
 	<dependencies>
 		<dependency>

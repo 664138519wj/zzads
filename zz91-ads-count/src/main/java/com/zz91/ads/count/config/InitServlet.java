@@ -3,10 +3,11 @@ package com.zz91.ads.count.config;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
+import com.zz91.ads.count.service.AdsService;
 import com.zz91.ads.count.thread.ControlThread;
 import com.zz91.util.cache.MemcachedUtils;
-import com.zz91.util.db.DBUtils;
 import com.zz91.util.db.pool.DBPoolFactory;
+import com.zz91.util.lang.RandomUtils;
 
 /**
  * 
@@ -25,10 +26,13 @@ public class InitServlet extends HttpServlet {
 		
 		ControlThread controlThread = new ControlThread();
 		controlThread.start();
+		
+		AdsService.CACHE_VERSION = RandomUtils.random(2);
 	}
 
 	public void destroy() {
 		ControlThread.shutdown();
 		MemcachedUtils.getInstance().getClient().shutdown();
 	}
+	
 }

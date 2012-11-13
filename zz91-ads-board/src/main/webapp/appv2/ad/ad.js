@@ -18,7 +18,8 @@ Ext.define("AdFormModel",{
 		{name:"remark",mapping:"remark"},
 		{name:"applicant",mapping:"applicant"},
 		{name:"sequence",mapping:"sequence"},
-		{name:"searchExact",mapping:"searchExact"}
+		{name:"searchExact",mapping:"searchExact"},
+		{name:"expiredRent",mapping:"expiredRent"}
 	],
 	proxy:{
 		type:"ajax",
@@ -51,6 +52,7 @@ Ext.define("AdGridModel",{
 		{name:"requestUrl",mapping:"requestUrl"},
 		{name:"a.sequence",mapping:"ad.sequence"},
 		{name:"searchExact",mapping:"ad.searchExact"},
+		{name:"expiredRent",mapping:"ad.expiredRent"},
 		{name:"width",mapping:"width"},
 		{name:"height",mapping:"height"}
 	]
@@ -396,6 +398,9 @@ Ext.define("com.zz91.ads.board.ad.ad.BaseGrid",{
 					var ad= value;
 					if(record.get("adTargetUrl")!="" && record.get("adTargetUrl")!=null){
 						ad="<a href='"+record.get("adTargetUrl")+"' target='_blank' >"+value+"</a>";
+					}
+					if(record.get("expiredRent")!=""){
+						ad=ad+"<br /><a href='"+record.get("expiredRent")+"' target='_blank' >含过期招租广告</a>";
 					}
 					if(record.get("adContent")!="" && record.get("adContent")!=null){
 						return ad+"<br /><a href='"+record.get("adContent")+"' target='_blank' ><img src='"+Context.ROOT+"/themes/boomy/pictures16.png'></a><img src='"+record.get("adContent")+"' width='150' height='50'/>";
@@ -1173,6 +1178,24 @@ Ext.define("com.zz91.ads.board.ad.ad.EditForm",{
 				}
 		    },{
 		    	xtype:"textfield",
+				name:"expiredRent",
+				id:"expiredRent",
+				anchor:"100%",
+				fieldLabel:"招租图片",
+				listeners:{
+					'focus':function(field){
+						var win=Ext.create("com.zz91.util.UploadWin",{
+							uploadUrl:Context.ROOT+"/ad/ad/upload.htm",
+							callbackFn:function(form,action){
+								field.setValue(Context.ROOT_IMAGE+action.result.data);
+								win.close();
+							}
+						});
+						win.show();
+					}
+				}
+		    },{
+		    	xtype:"textfield",
 		    	anchor:"100%",
 		    	name:"adDescription",
 		    	fieldLabel:"广告描述"
@@ -1184,9 +1207,15 @@ Ext.define("com.zz91.ads.board.ad.ad.EditForm",{
 				fieldLabel:"备注信息"
 		    },{
 		    	xtype:"hidden",
-				name:"id"
+				name:"id",
+				id:"id"
 		    }],
 		    buttons:[{
+				xtype:"button",
+				text:"取消招租",
+				iconCls:"delete16",
+				handler:this.cancelRent
+			},{
 				xtype:"button",
 				text:"仅修改",
 				iconCls:"saveas16",
@@ -1241,6 +1270,18 @@ Ext.define("com.zz91.ads.board.ad.ad.EditForm",{
 				}
 			});
 		}
+	},
+	cancelRent:function(){
+		var form=this.up("form");
+		Ext.Ajax.request({
+			url: Context.ROOT+"/ad/ad/removeRent.htm",
+			params: {
+				id: form.child("#id").getValue()
+			},
+			success: function(response){
+				form.child("#expiredRent").setValue("招租广告已移除，但您仍然可以点击这里重新设置招租广告！");
+			}
+		});
 	},
 	loadModel:function(id){
 		var _this=this;
@@ -1451,7 +1492,7 @@ com.zz91.ads.board.ad.ad.editWin=function(record){
 		title:"修改/审核广告",
 		layout:"border",
 		width : 600,
-		height:450,
+		height:500,
 		modal : true,
 		items:[form,grid]
 	});

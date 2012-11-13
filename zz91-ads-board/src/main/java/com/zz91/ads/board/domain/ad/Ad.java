@@ -44,6 +44,8 @@ public class Ad implements java.io.Serializable {
 	private BigDecimal sequence;
 	private String searchExact;
 	
+	private String expiredRent;
+	
 	public Ad() {
 		super();
 	}
@@ -343,6 +345,14 @@ public class Ad implements java.io.Serializable {
 	 */
 	public void setSequence(BigDecimal sequence) {
 		this.sequence = sequence;
+	}
+
+	public String getExpiredRent() {
+		return expiredRent;
+	}
+
+	public void setExpiredRent(String expiredRent) {
+		this.expiredRent = expiredRent;
 	}
 
 	

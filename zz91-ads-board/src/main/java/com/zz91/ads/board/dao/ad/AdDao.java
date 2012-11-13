@@ -127,4 +127,6 @@ public interface AdDao {
 	public Integer updatePosition(Integer id, Integer positionId);
 	
 	public Integer countExistsAd(Date gmtPlanEnd, String keywords, Integer positionId);
+	
+	public Integer updateRent(Integer id, String rent);
 }

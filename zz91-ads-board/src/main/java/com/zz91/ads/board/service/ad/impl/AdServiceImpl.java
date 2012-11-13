@@ -81,6 +81,7 @@ public class AdServiceImpl implements AdService {
 		
 		ad.setOnlineStatus(AdDao.ONLINE_STATUS_FALSE);
 		ad.setReviewStatus(AdDao.REVIEW_STATUS_UN);
+		ad.setExpiredRent("");
 		
 		return adDao.insertAd(ad);
 	}
@@ -217,6 +218,11 @@ public class AdServiceImpl implements AdService {
 	@Override
 	public Integer updatePosition(Integer id, Integer positionId) {
 		return adDao.updatePosition(id, positionId);
+	}
+
+	@Override
+	public Integer removeRent(Integer id) {
+		return adDao.updateRent(id, "");
 	}
 
 }

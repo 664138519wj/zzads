@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -41,6 +42,9 @@ public class AdsService {
 	public static boolean DEBUG=false;
 	public static final String VERSION="ad";
 	public static final int CACHE_EXPIRE=600;
+	
+	public static final String AD_COLUMN = "id, ad_title, ad_description, ad_content, position_id, gmt_content_modified,expired_rent,sequence,gmt_start,gmt_plan_end";
+	public static final String WHERE_NORMAL = "online_status='Y' and review_status='Y' and gmt_start<now()";
 	
 	private static AdsService _instance = null;
 
@@ -123,83 +127,25 @@ public class AdsService {
 		}
 		
 		StringBuffer sql=new StringBuffer();
-		sql.append("select a.id, a.ad_title, a.ad_description, a.ad_content,a.position_id,a.gmt_content_modified from ad a");
-		sql.append(" where a.position_id=").append(positionId);
-		sql.append(" and online_status='Y' and review_status='Y' and gmt_start<now()  and (gmt_plan_end is null or now()<gmt_plan_end)");
-		sql.append(" and search_exact='").append(sb.toString()).append("'");
+		sql.append("(select ").append(AD_COLUMN).append(" from ad");
+		sql.append(" where position_id=").append(positionId);
+		sql.append(" and ").append(WHERE_NORMAL).append(" and now()<gmt_plan_end");
+		sql.append(" and search_exact='").append(sb.toString()).append("' )");
+		sql.append(" union all ");
+		sql.append("(select ").append(AD_COLUMN).append(" from ad");
+		sql.append(" where position_id=").append(positionId);
+		sql.append(" and ").append(WHERE_NORMAL).append("  and gmt_plan_end is null");
+		sql.append(" and search_exact='").append(sb.toString()).append("')");
+		sql.append(" union all ");
+		sql.append("(select ").append(AD_COLUMN).append(" from ad");
+		sql.append(" where position_id=").append(positionId);
+		sql.append(" and ").append(WHERE_NORMAL).append("  and expired_rent!='' and now()>gmt_plan_end ");
+		sql.append(" and search_exact='").append(sb.toString()).append("')");
+		
 		sql.append(" order by sequence, gmt_start limit ").append(maxAd);
 		
-		final List<Ad> list = new ArrayList<Ad>(); 
+		return jdbcAD(sql.toString());
 		
-		DBUtils.select("zzads", sql.toString(), new IReadDataHandler() {
-			
-			@Override
-			public void handleRead(ResultSet rs) throws SQLException {
-				while (rs.next()) {
-					Ad ad=new Ad();
-					ad.setId(rs.getInt(1));
-					ad.setAdTitle(rs.getString(2));
-					ad.setAdDescription(rs.getString(3));
-					ad.setAdContent(rs.getString(4));
-					ad.setPositionId(rs.getInt(5));
-					ad.setGmtContentModified(rs.getDate(6));
-					list.add(ad);
-				}
-			}
-		});
-		
-		return list;
-		
-		
-//		final Map<Integer, Integer> adcount = new HashMap<Integer, Integer>();
-//		final List<Ad> list=new ArrayList<Ad>();
-//		
-//		for(Integer exactId:exact.keySet()){
-//			StringBuffer sql= new StringBuffer();
-//			sql.append("select a.id, a.ad_title, a.ad_description, a.ad_content, a.position_id,a.gmt_content_modified from ad_exact_type aet");
-//			sql.append(" inner join ad a on aet.ad_id=a.id");
-//			sql.append(" where a.position_id=").append(positionId);
-//			sql.append(" and aet.exact_type_id=").append(exactId);
-//			sql.append(" and aet.anchor_point='").append(exact.get(exactId)).append("'");
-//			sql.append(" and a.online_status='Y' and review_status='Y' and a.gmt_start<now() and (a.gmt_plan_end is null or now()<a.gmt_plan_end) ");
-//			sql.append(" order by a.gmt_start limit 20");
-//			
-//			DBUtils.select("zzads", sql.toString(), new IReadDataHandler() {
-//				
-//				@Override
-//				public void handleRead(ResultSet rs) throws SQLException {
-//					while(rs.next()){
-//						if(adcount.get(rs.getInt(1))==null){
-//							adcount.put(rs.getInt(1), 1);
-//							
-//							Ad ad=new Ad();
-//							ad.setId(rs.getInt(1));
-//							ad.setAdTitle(rs.getString(2));
-//							ad.setAdDescription(rs.getString(3));
-//							ad.setAdContent(rs.getString(4));
-//							ad.setPositionId(rs.getInt(5));
-//							ad.setGmtContentModified(rs.getDate(6));
-//							
-//							list.add(ad);
-//						}else {
-//							adcount.put(rs.getInt(1), adcount.get(rs.getInt(1))+1);
-//						}
-//					}
-//				}
-//			});
-//			
-//		}
-//		
-//		List<Ad> resultList = new ArrayList<Ad>();
-//		int i=0;
-//		for(Ad ad:list){
-//			if(adcount.get(ad.getId()).intValue()==exact.size() && i<maxAd){
-//				resultList.add(ad);
-//			}
-//			i++;
-//		}
-		
-//		return resultList;
 	}
 	
 	public List<Ad> queryAd(Integer positionId, Integer maxAd){
@@ -210,32 +156,22 @@ public class AdsService {
 			maxAd=1;
 		}
 		
-		StringBuffer sql= new StringBuffer();
-		sql.append("select a.id, a.ad_title, a.ad_description, a.ad_content,a.position_id,a.gmt_content_modified from ad a");
-		sql.append(" where a.position_id=").append(positionId);
-		sql.append(" and online_status='Y' and review_status='Y' and gmt_start<now()  and (gmt_plan_end is null or now()<gmt_plan_end) ");
+		StringBuffer sql=new StringBuffer();
+		sql.append("(select ").append(AD_COLUMN).append(" from ad");
+		sql.append(" where position_id=").append(positionId);
+		sql.append(" and ").append(WHERE_NORMAL).append(" and now()<gmt_plan_end )");
+		sql.append(" union all ");
+		sql.append("(select ").append(AD_COLUMN).append(" from ad");
+		sql.append(" where position_id=").append(positionId);
+		sql.append(" and ").append(WHERE_NORMAL).append("  and gmt_plan_end is null )");
+		sql.append(" union all ");
+		sql.append("(select ").append(AD_COLUMN).append(" from ad");
+		sql.append(" where position_id=").append(positionId);
+		sql.append(" and ").append(WHERE_NORMAL).append("  and expired_rent!='' and now()>gmt_plan_end )");
+		
 		sql.append(" order by sequence, gmt_start limit ").append(maxAd);
 		
-		final List<Ad> list = new ArrayList<Ad>(); 
-		
-		DBUtils.select("zzads", sql.toString(), new IReadDataHandler() {
-			
-			@Override
-			public void handleRead(ResultSet rs) throws SQLException {
-				while (rs.next()) {
-					Ad ad=new Ad();
-					ad.setId(rs.getInt(1));
-					ad.setAdTitle(rs.getString(2));
-					ad.setAdDescription(rs.getString(3));
-					ad.setAdContent(rs.getString(4));
-					ad.setPositionId(rs.getInt(5));
-					ad.setGmtContentModified(rs.getDate(6));
-					list.add(ad);
-				}
-			}
-		});
-		
-		return list;
+		return jdbcAD(sql.toString());
 	}
 	
 	
@@ -377,20 +313,6 @@ public class AdsService {
 		if(cacheList==null){
 			cacheList = buildAdCache(pid, ip, parameterMap);
 		}
-//		do {
-//			if(cacheList==null){
-//				cacheList=(List<String>) client.get(getKey(pid, parameterMap));
-//			}
-			
-//			if(cacheList==null){
-//				//查找广告
-//				cacheList = buildAdCache(pid, ip, parameterMap);
-//				break;
-//			}
-			
-//			提交更新请求
-			
-//		} while (false);
 		
 		//提交日志请求
 		long time=System.currentTimeMillis();
@@ -421,11 +343,6 @@ public class AdsService {
 		
 		return pid+getKeywordsKey(parameterMap)+"."+CACHE_VERSION;
 	}
-	
-//	public String getKey(Integer pid, Map<String, String> parameterMap){
-//		
-//		return pid+getKeywordsKey(parameterMap)+"."+VERSION;
-//	}
 	
 	public String getKeywordsKey(Map<String, String> parameterMap){
 		String keywordsKey="";
@@ -504,4 +421,36 @@ public class AdsService {
 		keywords=keywords.replaceAll("astokhr", ")");
 		return keywords;
 	}
+	
+	private List<Ad> jdbcAD(String sql){
+		final List<Ad> list = new ArrayList<Ad>(); 
+		
+		DBUtils.select("zzads", sql.toString(), new IReadDataHandler() {
+			
+			@Override
+			public void handleRead(ResultSet rs) throws SQLException {
+				long now=System.currentTimeMillis();
+				while (rs.next()) {
+					Ad ad=new Ad();
+					ad.setId(rs.getInt(1));
+					ad.setAdTitle(rs.getString(2));
+					ad.setAdDescription(rs.getString(3));
+					
+					Date planEndDate=rs.getDate(10);
+					if(planEndDate!=null && planEndDate.getTime()<now){
+						ad.setAdContent(rs.getString(7));
+					}else{
+						ad.setAdContent(rs.getString(4));
+					}
+					
+					ad.setPositionId(rs.getInt(5));
+					ad.setGmtContentModified(rs.getDate(6));
+					list.add(ad);
+				}
+			}
+		});
+		
+		return list;
+	}
+
 }
