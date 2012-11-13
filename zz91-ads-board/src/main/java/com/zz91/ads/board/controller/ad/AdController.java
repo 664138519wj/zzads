@@ -76,7 +76,9 @@ public class AdController extends BaseController{
 	@RequestMapping
 	public ModelAndView query(HttpServletRequest request, Map<String, Object> out,
 			Pager<AdDto> page, Ad ad, AdSearchDto adSearch){
-		
+		if(ad.getPositionId()!=null && ad.getPositionId()==0){
+			ad.setPositionId(null);
+		}
 		page = adService.pageAdByConditions(ad, adSearch, page);
 		return printJson(page, out);
 	}

@@ -349,7 +349,7 @@ Ext.define("com.zz91.ads.board.ad.ad.BaseGrid",{
 				clicksToEdit: 1
 			});
 		
-		var _cm=[{
+		var _cm=[Ext.create('Ext.grid.RowNumberer'),{
 				text:"编号",
 				dataIndex:"id",
 				width:50,

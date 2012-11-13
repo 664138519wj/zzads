@@ -45,6 +45,10 @@ public class BookingController extends BaseController{
 //		}
 //		booking.setGmtBooking(DateUtil.getDateAfterDays(new Date(), -EXPIRE_DAY));
 		
+		if(booking.getPositionId()!=null && booking.getPositionId()==0){
+			booking.setPositionId(null);
+		}
+		
 		page = adBookingService.pageBooking(booking, page);
 		return printJson(page, out);
 	}

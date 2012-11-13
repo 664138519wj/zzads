@@ -35,6 +35,7 @@ Ext.onReady(function() {
 		width:250,
 		listeners:{
 			"itemclick":function(view,model){
+				
 				adGrid.getStore().setExtraParam("positionId",model.getId());
 				adGrid.getStore().load();
 				

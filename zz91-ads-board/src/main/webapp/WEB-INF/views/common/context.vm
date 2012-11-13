@@ -10,7 +10,7 @@
 		this.ROOT_IMAGE="http://img1.zz91.com/ads";
 		this.PAGE_SIZE = 20;
 		this.LOGIN_USER="$!{loginuser}";
-		this.ADVERTISER_CATEGORY=["阿思拓"," 再生通用户","中环通用户"];
+		this.ADVERTISER_CATEGORY=["阿思拓","再生通用户","中环通用户"];
 		this.REVIEWSTATUS_CATEGORY={"U":"未审核","Y":"审核通过","N":"退回"};
 		this.ONLINE_STATUS={"Y":"已上线","N":"未上线"};
 		this.DESIGN_STATUS={"Y":"已完成","U":"未完成"};
