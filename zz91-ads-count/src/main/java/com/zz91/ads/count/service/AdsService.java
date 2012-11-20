@@ -429,7 +429,7 @@ public class AdsService {
 			
 			@Override
 			public void handleRead(ResultSet rs) throws SQLException {
-				long now=System.currentTimeMillis();
+				long now=System.currentTimeMillis() - 86400*1000l;
 				while (rs.next()) {
 					Ad ad=new Ad();
 					ad.setId(rs.getInt(1));
@@ -437,7 +437,7 @@ public class AdsService {
 					ad.setAdDescription(rs.getString(3));
 					
 					Date planEndDate=rs.getDate(10);
-					if(planEndDate!=null && planEndDate.getTime()<now){
+					if(planEndDate!=null && planEndDate.getTime()<now && StringUtils.isNotEmpty(rs.getString(7)) ){
 						ad.setAdContent(rs.getString(7));
 					}else{
 						ad.setAdContent(rs.getString(4));
